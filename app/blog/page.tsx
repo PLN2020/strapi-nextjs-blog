@@ -1,15 +1,4 @@
-import React from "react";
-import ReactMarkdown from 'react-markdown'
-import remarkGfm from "remark-gfm";
-
-async function getArticles() {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL}/articles`);
-    if (!res.ok) {
-        throw new Error('Failed to fetch data');
-    }
-
-    return res.json();
-}
+import Link from "next/link";
 
 export default async function Page() {
     const articles = await getArticles();
@@ -21,17 +10,21 @@ export default async function Page() {
             {articles && articles.data.map((article: any) => {
                 return (
                     <div key={article.id}>
-                        <div>{article.attributes.title}</div>
+                        <Link href={`/blog/${article.attributes.slug}`}>
+                            <h2>{article.attributes.title}</h2>
+                        </Link>
                         <div>{article.attributes.excerpt}</div>
-                        <div>{article.attributes.content}</div>
-                        <ReactMarkdown remarkPlugins={[remarkGfm]} className='prose prose-headings:text-blue-600'>
-                            {article.attributes.content}
-                        </ReactMarkdown>
-                        <br/>
-                        {article.attributes.slug}
                     </div>
                 );
             })}
         </div>
     )
+}
+
+async function getArticles() {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL}/articles?populate=*`);
+    if (!res.ok) {
+        throw new Error('Failed to fetch data');
+    }
+    return res.json();
 }
