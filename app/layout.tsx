@@ -14,10 +14,7 @@ export default function RootLayout({
         */}
         <head />
         <body className='bg-[#f9f8f6]'>
-            <header>
-                <Navbar />
-            </header>
-
+            <Navbar />
             <div>{children}</div>
         </body>
     </html>
